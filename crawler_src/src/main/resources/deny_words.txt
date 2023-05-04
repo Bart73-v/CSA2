@@ -1,0 +1,110 @@
+blockcookies
+blockallcookies
+decline
+declineall
+declineallcookies
+declinecookies
+deny
+disablecookies
+disallowcookies
+donotaccept
+donotacceptcookies
+don'taccept
+don'tacceptcookies
+don'tallow
+don'tallowcookies
+don'tenablecookies
+don'tpermit
+don'tpermitcookies
+no,idonotaccept
+no,idonotacceptcookies
+no,thanks
+notaccept
+notacceptcookies
+optout
+opt-outofcookies
+reject
+rejectall
+rejectallcookies
+rejectcookies
+refuse
+refuseall
+refuseallcookies
+refusecookies
+turnoffcookies
+disablecookietracking
+idisagree
+idonotconsent
+idonotagree
+iobject
+irefuse
+irefuseallcookies
+irefusetoconsent
+isaynotocookies
+isaynototracking
+iwanttocustomize
+customizecookies
+managecookies
+cookiesettings
+privacysettings
+managepreferences
+iprefernotto
+ichoosenottoacceptcookies
+neveraccept
+neverallowcookies
+disagreeandleave
+disagreeandexit
+disagreeandclose.
+block cookies
+block all cookies
+decline all
+decline all cookies
+decline cookies
+disable cookies
+disallow cookies
+do not accept
+do not accept cookies
+don't accept
+don't accept cookies
+don't allow
+don't allow cookies
+don't enable cookies
+don't permit
+don't permit cookies
+no, i do not accept
+no, i do not accept cookies
+no, thanks
+not accept
+not accept cookies
+opt out
+opt-out of cookies
+reject all
+reject all cookies
+reject cookies
+refuse all
+refuse all cookies
+refuse cookies
+turn off cookies
+disable cookie tracking
+i disagree
+i do not consent
+i do not agree
+i object
+i refuse
+i refuse all cookies
+i refuse to consent
+i say no to cookies
+i say no to tracking
+i want to customize
+customize cookies
+manage cookies
+cookie settings
+privacy settings
+manage preferences
+i prefer not to
+i choose not to accept cookies
+never accept
+never allow cookies
+disagree and leave
+disagree and exit
+disagree and close
