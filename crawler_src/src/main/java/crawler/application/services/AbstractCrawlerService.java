@@ -1,4 +1,5 @@
 package crawler.application.services;
+
 import crawler.constants.Constants;
 import crawler.domain.HTTPRequest;
 import crawler.domain.WebsiteStatistic;
@@ -8,7 +9,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.v110.emulation.Emulation;
+import org.openqa.selenium.devtools.v110.log.Log;
 import org.openqa.selenium.devtools.v110.network.Network;
+import org.openqa.selenium.devtools.v110.page.Page;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,13 +35,7 @@ public class AbstractCrawlerService implements CrawlerService {
 
     public AbstractCrawlerService(){
         this.driver = new ChromeDriver();
-        // todo
-//        this.driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-//        this.driver.manage().timeouts().pageLoadTimeout(5, TimeUnit.SECONDS);
-//        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(5));
-
         this.websiteStatistic = new WebsiteStatistic();
-
         this.screenShotService = new ScreenShotService(this.driver);
         this.jsonWriterService = new JsonWriterService();
         this.loggerService = new LoggerService();
@@ -44,7 +44,45 @@ public class AbstractCrawlerService implements CrawlerService {
     @Override
     public boolean navigateToURL(String url){
         try {
-            this.driver.get(url);
+            // Get the DevTools interface
+            DevTools devTools = ((ChromeDriver) driver).getDevTools();
+
+            // Start the DevTools session
+            devTools.createSession();
+
+            // Enable logging
+            devTools.send(Log.enable());
+
+            // Enable the Page and Emulation domains
+            devTools.send(Page.enable());
+
+            // Pause JavaScript execution on the page
+            devTools.send(Emulation.setScriptExecutionDisabled(true));
+
+            // Script to inject to detect canvas fingerprinting
+            String script =  "HTMLCanvasElement.prototype.toDataURL = function() {" +
+                    "console.error(\"Canvas toDataURL() called\");" +
+                    "return;" +
+                    "};" +
+                    "CanvasRenderingContext2D.prototype.fillText = function() {" +
+                    "console.error(\"Canvas fillText() called\");" +
+                    "};";
+
+            // Inject your custom JavaScript code
+            devTools.send(Page.addScriptToEvaluateOnNewDocument(script, Optional.of(""), Optional.empty()));
+
+            // Resume JavaScript execution on the page
+            devTools.send(Emulation.setScriptExecutionDisabled(false));
+
+            // Navigate to the page
+            driver.get(url);
+
+            // Resume JavaScript execution on the page
+            devTools.send(Emulation.setScriptExecutionDisabled(false));
+
+            // Sleep to allow website to execute canvas fingerprinting
+            Thread.sleep(1500);
+
         } catch (Exception e){
             this.loggerService.log(Level.SEVERE, String.format("URL %s seems down.", url));
             return false;
@@ -108,8 +146,22 @@ public class AbstractCrawlerService implements CrawlerService {
 
     @Override
     public void detectCanvasFingerprinting() {
+        // Search for needle within console errors
+        LogEntries logs = driver.manage().logs().get("browser");
+        if (logs != null) {
+            for (LogEntry entry : logs) {
+                if (entry.getMessage().contains("Canvas")) {
+                    this.loggerService.log(Level.INFO, "Potential canvas fingerprinting detected.");
+                    this.websiteStatistic.isCanvasFingerprinting = true;
+                    return;
+                }
+            }
+        }
 
+        this.websiteStatistic.isCanvasFingerprinting = false;
+        this.loggerService.log(Level.INFO, "Canvas fingerprinting not detected.");
     }
+
 
     @Override
     public void saveWebsiteStatisticsToJson(WebsiteStatistic websiteStatistic, Boolean acceptCookies) {

@@ -27,6 +27,9 @@ public class CrawlerAcceptService extends AbstractCrawlerService implements craw
         // Navigate to URL
         if(!super.navigateToURL(url)) return;
 
+        // Canvas fingerprinting
+        super.detectCanvasFingerprinting();
+
         // Statistics
         super.websiteStatistic.pageLoadEndTimestamp = System.currentTimeMillis();
 
@@ -54,35 +57,4 @@ public class CrawlerAcceptService extends AbstractCrawlerService implements craw
         // Close the browser session
         super.driver.quit();
     }
-
-
-//
-//    // Navigate to a website that uses canvas fingerprinting
-//driver.get("https://amibeingtracked.com/");
-//
-//    // Execute JavaScript to get the canvas fingerprint
-//    JavascriptExecutor js = (JavascriptExecutor) driver;
-//    String canvasFingerprint = (String) js.executeScript("return document.createElement('canvas').toDataURL();");
-//
-//    // Compare the canvas fingerprint with a known list of fingerprints that are used by websites for tracking
-//    List<String> knownFingerprints = Arrays.asList("d446ce6e8822fe2f1a8a1fc649f9acbf", "b14a478cfe8d7a7b0c5b45e0a1a52de7");
-//if (knownFingerprints.contains(getMD5Hash(canvasFingerprint))) {
-//        System.out.println("Canvas fingerprinting detected!");
-//    } else {
-//        System.out.println("Canvas fingerprinting not detected.");
-//    }
-//
-//    // Utility function to get the MD5 hash of a string
-//    private static String getMD5Hash(String input) throws NoSuchAlgorithmException {
-//        MessageDigest md = MessageDigest.getInstance("MD5");
-//        md.update(input.getBytes());
-//        byte[] digest = md.digest();
-//        return DatatypeConverter.printHexBinary(digest).toLowerCase();
-//    }
-
-
-
-
-
-
 }

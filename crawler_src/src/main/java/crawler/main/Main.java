@@ -36,6 +36,11 @@ public class Main {
             boolean acceptMode = cmd.hasOption("a");
             boolean noopMode = cmd.hasOption("n");
 
+            // If no option is specified, do both
+            if(!acceptMode && !noopMode){
+                acceptMode = noopMode = true;
+            }
+
             String targetUrl = cmd.getOptionValue("u");
             List<String> targetUrls = new ArrayList<>();
             if (cmd.hasOption("i")) {
@@ -106,14 +111,4 @@ public class Main {
             e.printStackTrace();
         }
     }
-
-
-//    public static void main(String[] args) {
-//
-//        CrawlerService crawlerService = new CrawlerAcceptService();
-////        crawlerService.crawl("https://wordpress.com");
-////        crawlerService.crawl("https://google.com");
-//        crawlerService.crawl("https://google.com:81");
-////        crawlerService.crawl("https://tumblr.com");
-//    }
 }

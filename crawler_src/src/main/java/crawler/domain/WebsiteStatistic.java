@@ -9,5 +9,6 @@ public class WebsiteStatistic {
     public String postPageLoadURL;
     public long pageLoadStartTimestamp;
     public long pageLoadEndTimestamp;
+    public boolean isCanvasFingerprinting;
     public List<HTTPRequest> httpRequests = new ArrayList<>();
 }

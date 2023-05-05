@@ -25,6 +25,9 @@ public class CrawlerNoopService extends AbstractCrawlerService implements crawle
         // Navigate to URL
         if(!super.navigateToURL(url)) return;
 
+        // Poll devTool logs for canvas fingerprinting
+        super.detectCanvasFingerprinting();
+
         // Statistics
         super.websiteStatistic.pageLoadEndTimestamp = System.currentTimeMillis();
 
