@@ -1,6 +1,7 @@
 package crawler.application.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import crawler.domain.WebsiteStatistic;
 
 import java.io.File;
@@ -18,11 +19,15 @@ public class JsonWriterService implements crawler.domain.services.JsonWriterServ
         String filename = websiteStatistic.domain;
         filename += acceptCookie ? "_accept.json" : "_noop.json";
 
+        // Create an ObjectWriter with pretty printer
+        ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
+
         // Convert the Java object to JSON and write to a file
         try {
-            mapper.writeValue(new File(System.getProperty("user.dir") + "/../crawl_data/" + filename), websiteStatistic);
+            writer.writeValue(new File(System.getProperty("user.dir") + "/../crawl_data/" + filename), websiteStatistic);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 }
