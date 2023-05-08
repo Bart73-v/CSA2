@@ -21,7 +21,6 @@ public class CrawlerAcceptService extends AbstractCrawlerService implements craw
 
         // Statistics
         super.websiteStatistic.domain = domain;
-        super.websiteStatistic.postPageLoadURL = driver.getCurrentUrl();
         super.websiteStatistic.pageLoadStartTimestamp = System.currentTimeMillis();
 
         // Navigate to URL
@@ -32,6 +31,7 @@ public class CrawlerAcceptService extends AbstractCrawlerService implements craw
 
         // Statistics
         super.websiteStatistic.pageLoadEndTimestamp = System.currentTimeMillis();
+        super.websiteStatistic.postPageLoadURL = driver.getCurrentUrl();
 
         // Sleep to await page loading before accepting cookie
         Thread.sleep(Constants.SLEEP_BEFORE_PAGE_LOAD_MILLISECONDS);
