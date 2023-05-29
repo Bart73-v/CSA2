@@ -7,8 +7,10 @@ import org.apache.commons.cli.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,8 +86,8 @@ public class Main {
     }
 
     public static void startCrawling(String url, boolean acceptMode, boolean noopMode) {
-
         String domain = "";
+
         try {
             URL netUrl = new URL(url.startsWith("http") ? url : "https://" + url);
             domain = netUrl.getHost();
@@ -93,9 +95,33 @@ public class Main {
             if (domain.startsWith("www.")) {
                 domain = domain.substring(4);
             }
+
+            // Check if DNS resolves, if not, log
+            InetAddress.getByName(domain);
+
         } catch (MalformedURLException e) {
             System.err.println("Invalid URL: " + url);
             e.printStackTrace();
+        } catch (UnknownHostException e) {
+            System.err.println("DNS error for host: " + domain);
+            e.printStackTrace();
+
+            // Handle special case of DNS error; crawling should initialize like normal, but abort after construction
+            try {
+                if (acceptMode) {
+                    CrawlerService crawlerAcceptService = new CrawlerAcceptService();
+                    crawlerAcceptService.dumpOnly(domain, true);
+
+                } if (noopMode){
+                    CrawlerService crawlerNoopService = new CrawlerNoopService();
+                    crawlerNoopService.dumpOnly(domain, false);
+                }
+            } catch (Exception f) {
+                f.printStackTrace();
+            }
+
+            // Abort after DNS error
+            return;
         }
 
         try {

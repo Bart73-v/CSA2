@@ -27,16 +27,14 @@ import java.util.logging.Level;
 
 public class AbstractCrawlerService implements CrawlerService {
 
-    public final crawler.domain.services.ScreenShotService screenShotService;
+    public crawler.domain.services.ScreenShotService screenShotService;
     public final crawler.domain.services.JsonWriterService jsonWriterService;
     public final crawler.domain.services.LoggerService loggerService;
-    public final WebDriver driver;
     public WebsiteStatistic websiteStatistic;
+    public WebDriver driver;
 
     public AbstractCrawlerService(){
-        this.driver = new ChromeDriver();
         this.websiteStatistic = new WebsiteStatistic();
-        this.screenShotService = new ScreenShotService(this.driver);
         this.jsonWriterService = new JsonWriterService();
         this.loggerService = new LoggerService();
     }
@@ -60,15 +58,16 @@ public class AbstractCrawlerService implements CrawlerService {
             devTools.send(Emulation.setScriptExecutionDisabled(true));
 
             // Script to inject to detect canvas fingerprinting
-            String script =  "HTMLCanvasElement.prototype.toDataURL = function() {" +
-                    "console.error(\"Canvas toDataURL() called\");" +
-                    "return;" +
-                    "};" +
-                    "CanvasRenderingContext2D.prototype.fillText = function() {" +
-                    "console.error(\"Canvas fillText() called\");" +
-                    "};";
+            String script = """
+                    HTMLCanvasElement.prototype._originalToDataURL = HTMLCanvasElement.prototype.toDataURL;
+                    HTMLCanvasElement.prototype.toDataURL = function(type) {
+                        console.error("Canvas toDataURL() called with " + type);
+                        const dataUrl = this._originalToDataURL(type);
+                        console.error("Canvas fingerprinting|", dataUrl);
+                        return dataUrl;
+                    };""";
 
-            // Inject your custom JavaScript code
+            // Inject JavaScript code
             devTools.send(Page.addScriptToEvaluateOnNewDocument(script, Optional.of(""), Optional.empty()));
 
             // Resume JavaScript execution on the page
@@ -84,6 +83,7 @@ public class AbstractCrawlerService implements CrawlerService {
             Thread.sleep(1500);
 
         } catch (Exception e){
+            this.websiteStatistic.dnsError = true;
             this.loggerService.log(Level.SEVERE, String.format("URL %s seems down.", url));
             return false;
         }
@@ -150,8 +150,21 @@ public class AbstractCrawlerService implements CrawlerService {
         LogEntries logs = driver.manage().logs().get("browser");
         if (logs != null) {
             for (LogEntry entry : logs) {
-                if (entry.getMessage().contains("Canvas")) {
-                    this.loggerService.log(Level.INFO, "Potential canvas fingerprinting detected.");
+                if (entry.getMessage().contains("Canvas fingerprinting")) {
+
+                    // Get and parse toDataUrl argument
+                    String message = entry.getMessage();
+                    String[] messageSplitted = message.split("\\|");
+                    String toDataUrl = messageSplitted[1];
+                    toDataUrl = toDataUrl
+                            .replaceAll("\"", "")
+                            .replaceAll("\\\\", "")
+                            .trim();
+
+                    this.loggerService.log(Level.INFO, "Canvas fingerprinting detected.");
+
+                    // Save website statistic
+                    this.websiteStatistic.toDataUrl = toDataUrl;
                     this.websiteStatistic.isCanvasFingerprinting = true;
                     return;
                 }
@@ -208,4 +221,12 @@ public class AbstractCrawlerService implements CrawlerService {
 
     @Override
     public void crawl(String domain) throws InterruptedException {}
+
+    @Override
+    public void dumpOnly(String domain, boolean acceptCookies){
+        // This method is only called in case of a DNS error
+        this.websiteStatistic.dnsError = true;
+        this.websiteStatistic.domain = domain;
+        this.saveWebsiteStatisticsToJson(this.websiteStatistic, acceptCookies);
+    }
 }

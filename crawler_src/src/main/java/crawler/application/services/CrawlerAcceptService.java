@@ -1,6 +1,7 @@
 package crawler.application.services;
 
 import crawler.constants.Constants;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.util.logging.Level;
 
@@ -12,6 +13,10 @@ public class CrawlerAcceptService extends AbstractCrawlerService implements craw
 
     @Override
     public void crawl(String domain) throws InterruptedException {
+
+        // Initialize driver and SSS
+        super.driver = new ChromeDriver();
+        this.screenShotService = new ScreenShotService(this.driver);
 
         // Transform domain to URL
         String url = "https://" + domain;
@@ -41,6 +46,7 @@ public class CrawlerAcceptService extends AbstractCrawlerService implements craw
 
         // Accept cookie
         if (!super.clickBanner(super.driver, Constants.RESOURCE_ACCEPT_WORDS)){
+            super.websiteStatistic.consentClickError = true;
             super.loggerService.log(Level.WARNING, String.format("All acceptor methods failed for domain %s. " +
                     "Could not accept cookie!", domain));
         }

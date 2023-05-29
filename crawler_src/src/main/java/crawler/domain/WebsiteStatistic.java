@@ -11,4 +11,8 @@ public class WebsiteStatistic {
     public long pageLoadEndTimestamp;
     public boolean isCanvasFingerprinting;
     public List<HTTPRequest> httpRequests = new ArrayList<>();
+    public String toDataUrl = "";
+    public boolean consentClickError = false;
+    public boolean pageLoadTimeout = false;
+    public boolean dnsError = false;
 }

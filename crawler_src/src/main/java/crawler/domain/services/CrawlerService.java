@@ -19,4 +19,6 @@ public interface CrawlerService  {
     void enableDevToolsListener();
 
     void saveWebsiteStatisticsToJson(WebsiteStatistic websiteStatistic, Boolean acceptCookies);
+
+    void dumpOnly(String domain, boolean acceptCookies);
 }

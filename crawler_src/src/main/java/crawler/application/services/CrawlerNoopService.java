@@ -1,6 +1,7 @@
 package crawler.application.services;
 
 import crawler.constants.Constants;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 public class CrawlerNoopService extends AbstractCrawlerService implements crawler.domain.services.CrawlerService{
 
@@ -10,6 +11,10 @@ public class CrawlerNoopService extends AbstractCrawlerService implements crawle
 
     @Override
     public void crawl(String domain) throws InterruptedException {
+
+        // Initialize driver and SSS
+        super.driver = new ChromeDriver();
+        this.screenShotService = new ScreenShotService(this.driver);
 
         // Transform domain to URL
         String url = "https://" + domain;
