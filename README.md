@@ -11,7 +11,7 @@ This project is a web crawler developed using Java and Selenium. The objective o
 
 See the [releases] page to download the latest binaries.
 
-[releases]: <https://github.com/Bart73-v/CSA2/releases/releases>
+[releases]: <https://github.com/Bart73-v/CSA2/releases/>
 
 ## Usage
 
