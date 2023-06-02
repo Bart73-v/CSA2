@@ -1,8 +1,10 @@
 package crawler.application.services;
 
 import crawler.constants.Constants;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import java.util.Set;
 import java.util.logging.Level;
 
 public class CrawlerAcceptService extends AbstractCrawlerService implements crawler.domain.services.CrawlerService {

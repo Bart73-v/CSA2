@@ -5,6 +5,7 @@ import crawler.domain.HTTPRequest;
 import crawler.domain.WebsiteStatistic;
 import crawler.domain.services.CrawlerService;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -19,10 +20,7 @@ import org.openqa.selenium.logging.LogEntry;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.logging.Level;
 
 public class AbstractCrawlerService implements CrawlerService {
@@ -125,16 +123,18 @@ public class AbstractCrawlerService implements CrawlerService {
 
         devTools.addListener(Network.responseReceived(), response -> {
             try{
+
                 // Get HTTP request by request ID
                 Optional<HTTPRequest> httpRequestOptional = this.websiteStatistic.httpRequests.stream()
                         .filter(httpRequest -> httpRequest.requestID.equals(response.getRequestId().toString()))
                         .findFirst();
 
-                // Set response header
                 if (httpRequestOptional.isPresent()) {
                     // Set response header
                     HTTPRequest httpRequest = httpRequestOptional.get();
                     httpRequest.responseHeader = response.getResponse().getHeaders().toString().substring(0, 512);
+                    Set<Cookie> cookies = this.driver.manage().getCookies();
+                    this.websiteStatistic.cookies = cookies;
                 }
             }
             catch(Exception e){
