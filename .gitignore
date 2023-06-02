@@ -1,3 +1,6 @@
+# Java class files
+crawler_src/target/
+
 crawl_data/*
 !crawl_data/.gitkeep
 
