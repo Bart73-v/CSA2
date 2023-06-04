@@ -133,8 +133,6 @@ public class AbstractCrawlerService implements CrawlerService {
                     // Set response header
                     HTTPRequest httpRequest = httpRequestOptional.get();
                     httpRequest.responseHeader = response.getResponse().getHeaders().toString().substring(0, 512);
-                    Set<Cookie> cookies = this.driver.manage().getCookies();
-                    this.websiteStatistic.cookies = cookies;
                 }
             }
             catch(Exception e){

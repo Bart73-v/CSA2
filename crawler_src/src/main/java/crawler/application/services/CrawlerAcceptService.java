@@ -59,6 +59,10 @@ public class CrawlerAcceptService extends AbstractCrawlerService implements craw
         // Take screenshot after accepting cookie banner
         super.screenShotService.takeScreenShot(domain, true, true);
 
+        // Save cookies
+        Set<Cookie> cookies = this.driver.manage().getCookies();
+        this.websiteStatistic.cookies = cookies;
+
         // Save website statistics to JSON file
         super.saveWebsiteStatisticsToJson(super.websiteStatistic, true);
 
