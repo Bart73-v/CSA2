@@ -21,7 +21,20 @@ public class ScreenShotService implements crawler.domain.services.ScreenShotServ
 
     @Override
     public String buildFileString() {
-        String outputFile = System.getProperty("user.dir") + "/../crawl_data/" + domain;
+        String outputDir = getClass().getProtectionDomain().getCodeSource().getLocation().toString();
+        outputDir = outputDir.substring(6);
+
+        // Get env variable and correct output location
+        String sysEnvStr = System.getenv("CRAWLER_DEV_MODE");
+
+        String outputFile;
+
+        if (sysEnvStr != null){
+            outputFile = outputDir + "..\\..\\..\\crawl_data\\" + domain;
+        } else {
+            outputDir = outputDir.substring(0, outputDir.length() - 11);
+            outputFile = outputDir + "crawl_data\\" + domain;
+        }
 
         if (consented) {
             outputFile += postConsented ? "_accept_post_" : "_accept_pre_";
