@@ -1,7 +1,10 @@
 package crawler.application.services;
 
 import crawler.constants.Constants;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.chrome.ChromeDriver;
+
+import java.util.Set;
 
 public class CrawlerNoopService extends AbstractCrawlerService implements crawler.domain.services.CrawlerService{
 
@@ -41,6 +44,10 @@ public class CrawlerNoopService extends AbstractCrawlerService implements crawle
 
         // Take screenshot after page load
         super.screenShotService.takeScreenShot(domain, false, false);
+
+        // Save cookies
+        Set<Cookie> cookies = this.driver.manage().getCookies();
+        this.websiteStatistic.cookies = cookies;
 
         // Save website statistics to JSON file
         super.saveWebsiteStatisticsToJson(super.websiteStatistic, false);
