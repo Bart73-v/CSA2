@@ -13,6 +13,10 @@ See the [releases] page to download the latest binaries.
 
 [releases]: <https://github.com/Bart73-v/CSA2/releases/>
 
+### Installation instructions
+
+Download the latest binary from the [releases] page and save the JAR file to an arbitrary location. Then, use your favorite shell in combination the parameters described in the 'Usage' section below.
+
 ## Usage
 
 This web crawler can be run using the following command line parameters:
