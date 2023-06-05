@@ -3,6 +3,7 @@ package crawler.application.services;
 import crawler.constants.Constants;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +19,11 @@ public class CrawlerAcceptService extends AbstractCrawlerService implements craw
     public void crawl(String domain) throws InterruptedException {
 
         // Initialize driver and SSS
-        super.driver = new ChromeDriver();
+        ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.addArguments("--headless");
+        chromeOptions.setHeadless(true);
+
+        super.driver = new ChromeDriver(chromeOptions);
         super.driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
 
         this.screenShotService = new ScreenShotService(this.driver);

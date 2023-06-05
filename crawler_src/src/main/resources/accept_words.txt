@@ -100,6 +100,8 @@ allezulassen
 allencookieszustimmen
 allenzustimmen
 allesakzeptieren
+allesaccepteren
+alles accepteren
 allesklar
 allow
 allowall
