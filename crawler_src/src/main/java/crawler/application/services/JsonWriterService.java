@@ -29,7 +29,10 @@ public class JsonWriterService implements crawler.domain.services.JsonWriterServ
         if (sysEnvStr != null){
             outputFile = outputDir + "..\\..\\..\\crawl_data\\" + filename;
         } else {
-            outputDir = outputDir.substring(0, outputDir.length() - 11);
+            int lastIndex = outputDir.lastIndexOf("/");
+            if (lastIndex != -1) {
+                outputDir = outputDir.substring(0, lastIndex + 1);
+            }
             outputFile = outputDir + "crawl_data\\" + filename;
         }
 

@@ -81,8 +81,12 @@ public class AbstractCrawlerService implements CrawlerService {
             Thread.sleep(1500);
 
         } catch (Exception e){
-            this.websiteStatistic.dnsError = true;
+            this.websiteStatistic.pageLoadTimeout = true;
             this.loggerService.log(Level.SEVERE, String.format("URL %s seems down.", url));
+
+            // Close the browser session
+            driver.quit();
+
             return false;
         }
 

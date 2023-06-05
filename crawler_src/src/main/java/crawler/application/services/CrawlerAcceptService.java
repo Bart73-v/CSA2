@@ -5,6 +5,7 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class CrawlerAcceptService extends AbstractCrawlerService implements crawler.domain.services.CrawlerService {
@@ -18,6 +19,8 @@ public class CrawlerAcceptService extends AbstractCrawlerService implements craw
 
         // Initialize driver and SSS
         super.driver = new ChromeDriver();
+        super.driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+
         this.screenShotService = new ScreenShotService(this.driver);
 
         // Transform domain to URL
@@ -31,7 +34,11 @@ public class CrawlerAcceptService extends AbstractCrawlerService implements craw
         super.websiteStatistic.pageLoadStartTimestamp = System.currentTimeMillis();
 
         // Navigate to URL
-        if(!super.navigateToURL(url)) return;
+        if(!super.navigateToURL(url)) {
+            // Write PageLoadTimeOut error
+            this.saveWebsiteStatisticsToJson(this.websiteStatistic, true);
+            return;
+        }
 
         // Canvas fingerprinting
         super.detectCanvasFingerprinting();

@@ -5,6 +5,7 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class CrawlerNoopService extends AbstractCrawlerService implements crawler.domain.services.CrawlerService{
 
@@ -17,6 +18,8 @@ public class CrawlerNoopService extends AbstractCrawlerService implements crawle
 
         // Initialize driver and SSS
         super.driver = new ChromeDriver();
+        super.driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+
         this.screenShotService = new ScreenShotService(this.driver);
 
         // Transform domain to URL
@@ -31,7 +34,11 @@ public class CrawlerNoopService extends AbstractCrawlerService implements crawle
         super.websiteStatistic.pageLoadStartTimestamp = System.currentTimeMillis();
 
         // Navigate to URL
-        if(!super.navigateToURL(url)) return;
+        if(!super.navigateToURL(url)) {
+            // Write PageLoadTimeOut error
+            this.saveWebsiteStatisticsToJson(this.websiteStatistic, false);
+            return;
+        }
 
         // Poll devTool logs for canvas fingerprinting
         super.detectCanvasFingerprinting();
